@@ -1,0 +1,23 @@
+[package]
+name = "ct-uint"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Constant-time fixed-width big integers and limb arithmetic for secret-data cryptography"
+readme = "README.md"
+keywords = ["constant-time", "bigint", "limb", "cryptography"]
+categories = ["cryptography"]
+
+[dependencies]
+subtle = { workspace = true }
+zeroize = { workspace = true, optional = true }
+
+[features]
+default = ["zeroize"]
+zeroize = ["dep:zeroize"]
+
+[lints]
+workspace = true

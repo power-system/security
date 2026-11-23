@@ -1,0 +1,49 @@
+[workspace]
+resolver = "3"                       
+members  = ["crates/*"]
+# default-members = ["crates/my-cli"]
+# exclude  = ["crates/experimental"]
+
+[workspace.package]
+version      = "0.1.0"
+edition      = "2024"
+rust-version = "1.98"
+license      = "MIT OR Apache-2.0"
+repository   = "https://github.com/power-system/security"
+authors      = ["zjh"]
+
+[workspace.dependencies]
+ct-uint = { path = "crates/ct-uint", version = "0.1.0", default-features = false }
+ct-fp   = { path = "crates/ct-fp",   version = "0.1.0", default-features = false }
+ct-scalar = { path = "crates/ct-scalar", version = "0.1.0", default-features = false }
+ct-curve-point = { path = "crates/ct-curve-point", version = "0.1.0", default-features = false }
+ct-ed25519 = { path = "crates/ct-ed25519", version = "0.1.0", default-features = false }
+ct-ts      = { path = "crates/ct-ts",      version = "0.1.0", default-features = false }
+
+subtle    = { version = "2.6.1", default-features = false }
+zeroize   = { version = "1.9.1", default-features = false }
+sha2      = { version = "0.11.1", default-features = false }
+signature = { version = "3.0.0", default-features = false }
+rand_core = { version = "0.10.1", default-features = false }
+hex       = "0.4.3"
+rand      = { version = "0.10.4" }
+
+# ── 1.100 added：Cargo's own lint ───────────────────
+[workspace.lints.rust]
+unsafe_code     = "forbid"
+unused_imports  = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[workspace.lints.cargo]
+unused_dependencies            = "warn"
+unused_workspace_dependencies  = "warn"
+missing_lints_inheritance      = "warn"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+
+# [patch.crates-io] / [replace]

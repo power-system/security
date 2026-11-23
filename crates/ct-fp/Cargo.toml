@@ -1,0 +1,17 @@
+[package]
+name = "ct-fp"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Prime-field arithmetic trait and shared logic for constant-time cryptography"
+readme = "README.md"
+
+[dependencies]
+ct-uint = { workspace = true }
+subtle = { workspace = true }
+
+[lints]
+workspace = true

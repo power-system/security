@@ -1,0 +1,25 @@
+[package]
+name = "ct-ts-ed25519"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "FROST(Ed25519, SHA-512) ciphersuite for ct-ts"
+readme = "README.md"
+keywords = ["frost", "threshold", "ed25519", "cryptography"]
+categories = ["cryptography"]
+
+[dependencies]
+ct-ed25519 = { workspace = true, features = ["zeroize"] }
+ct-ts = { workspace = true }
+sha2 = { workspace = true }
+subtle = { workspace = true }
+
+[dev-dependencies]
+hex = { workspace = true }
+rand = { workspace = true, features = ["std"] }
+
+[lints]
+workspace = true

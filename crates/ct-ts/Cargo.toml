@@ -1,0 +1,25 @@
+[package]
+name = "ct-ts"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Threshold Schnorr signatures (FROST, RFC 9591) — protocol core"
+readme = "README.md"
+keywords = ["frost", "threshold", "schnorr", "cryptography"]
+categories = ["cryptography"]
+
+[dependencies]
+ct-scalar = { workspace = true }
+subtle = { workspace = true }
+zeroize = { workspace = true, features = ["derive"] }
+rand_core = { workspace = true }
+
+[dev-dependencies]
+hex = { workspace = true }
+rand = { workspace = true, features = ["std", "std_rng", "sys_rng"] }
+
+[lints]
+workspace = true

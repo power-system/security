@@ -1,0 +1,21 @@
+[package]
+name = "ct-curve-point"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Elliptic-curve point abstraction traits for constant-time cryptography"
+readme = "README.md"
+
+[dependencies]
+ct-scalar = { workspace = true }
+ct-uint = { workspace = true }
+subtle = { workspace = true }
+
+[dev-dependencies]
+ct-fp = { workspace = true }
+
+[lints]
+workspace = true

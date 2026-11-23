@@ -1,0 +1,32 @@
+[package]
+name = "ct-ed25519"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Constant-time Ed25519 signatures (RFC 8032)"
+readme = "README.md"
+keywords = ["ed25519", "signature", "constant-time", "cryptography"]
+categories = ["cryptography"]
+
+[dependencies]
+ct-curve-point = { workspace = true }
+ct-fp = { workspace = true }
+ct-scalar = { workspace = true }
+ct-uint = { workspace = true }
+sha2 = { workspace = true }
+signature = { workspace = true }
+subtle = { workspace = true }
+zeroize = { workspace = true, features = ["derive"], optional = true }
+
+[features]
+default = ["zeroize"]
+zeroize = ["dep:zeroize", "ct-uint/zeroize"]
+
+[dev-dependencies]
+hex = { workspace = true }
+
+[lints]
+workspace = true
