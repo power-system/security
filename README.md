@@ -36,7 +36,21 @@ All crates are `#![no_std]` and `#![forbid(unsafe_code)]`. Zeroization of
 secret material is available where applicable: `ct-uint` and `ct-ed25519`
 expose a `zeroize` feature, and `ct-ts` zeroizes unconditionally.
 
-## Layout
+## Using the crates
+
+Within this workspace, depend on a crate by relative path:
+
+```toml
+[dependencies]
+ct-ed25519 = { path = "../ct-ed25519" }
+```
+
+For a single-key signature, use `ct-ed25519::{SigningKey, VerifyingKey}`. For
+threshold signing, use `ct-ts` with the `ct-ts-ed25519::Ed25519Sha512`
+ciphersuite. Each crate README has a complete design, usage example, and API
+reference.
+
+## Repository structure
 
 ```text
 .
@@ -76,6 +90,19 @@ cargo test -p ct-uint --no-default-features
 cargo test -p ct-ed25519 --no-default-features
 cargo test -p ct-ed25519 --features zeroize
 ```
+
+## Crate documentation
+
+Each crate README documents its internal design, how to use it, and its public
+API:
+
+- [`ct-uint` — limbs and fixed-width integers](crates/ct-uint/README.md)
+- [`ct-fp` — prime-field trait](crates/ct-fp/README.md)
+- [`ct-scalar` — scalar-field trait](crates/ct-scalar/README.md)
+- [`ct-curve-point` — curve traits](crates/ct-curve-point/README.md)
+- [`ct-ed25519` — Ed25519 keys, signatures, and curve types](crates/ct-ed25519/README.md)
+- [`ct-ts` — FROST protocol core](crates/ct-ts/README.md)
+- [`ct-ts-ed25519` — Ed25519 FROST ciphersuite](crates/ct-ts-ed25519/README.md)
 
 ## Security
 

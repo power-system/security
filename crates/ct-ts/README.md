@@ -8,7 +8,7 @@ signing, aggregation, and Lagrange interpolation — and leaves the group and
 hash implementation behind a single [`Ciphersuite`] trait. A concrete
 ciphersuite crate wires that trait to a curve without reimplementing FROST.
 
-> **Status:** experimental, v0.0.1. The protocol core has not been
+> **Status:** experimental, v0.1.5. The protocol core has not been
 > independently audited. Do not use it to protect production secrets without a
 > security review.
 
@@ -25,7 +25,7 @@ ciphersuite crate wires that trait to a curve without reimplementing FROST.
 - Zeroization of signing shares and nonces on drop
 - `#![no_std]` + `alloc`; there is deliberately no `std` feature
 
-**Not included in v0.0.1**
+**Not included**
 
 - Networking, serialization, or a transport format
 - Preprocessing / nonce precomputation
@@ -161,6 +161,16 @@ separator — so the result verifies under any RFC 8032-compliant verifier.
 | `H5` | Commitment-list prehash, with `"com"` domain separator |
 
 ## Usage
+
+```toml
+[dependencies]
+ct-ts = "0.1.5"
+```
+
+Within this workspace, use the path dependency
+`ct-ts = { path = "../ct-ts" }`. For a ready-made Ed25519 ciphersuite, see
+[`ct-ts-ed25519`](../ct-ts-ed25519), which supplies `Ed25519Sha512` and an
+end-to-end threshold-signature example.
 
 ### Implementing a ciphersuite
 

@@ -25,6 +25,27 @@ The crate implements the full signature pipeline from scratch on top of the
 - fixed-iteration scalar multiplication and limb-based field arithmetic
 - RFC 8032 §7.1 test vectors included
 
+## Design and structure
+
+The crate is a thin Ed25519 implementation over the workspace primitives
+`ct-uint`, `ct-fp`, `ct-scalar`, and `ct-curve-point`:
+
+| File | Responsibility |
+|---|---|
+| `src/field.rs` | Arithmetic in the base field $\mathbb{F}_p$ |
+| `src/scalar.rs` | Scalars modulo the group order $\ell$ |
+| `src/point.rs` | Extended-coordinate Edwards points and the curve model |
+| `src/keys.rs` | Seed expansion and public-key derivation |
+| `src/signature.rs` | The 64-byte `Signature` type |
+| `src/sign.rs` | Deterministic RFC 8032 signing |
+| `src/verify.rs` | Cofactorless signature verification |
+| `src/error.rs` | Opaque key/signature decoding error |
+
+The `sign`/`verify` split keeps the signing path (which touches secret
+scalars and nonces) separate from the public verification path. Curve and
+scalar types are re-exported so protocol crates such as `ct-ts-ed25519` can
+build on them.
+
 ## The Ed25519 curve
 
 Ed25519 is the twisted Edwards curve
@@ -299,18 +320,19 @@ scalar, and prefix on drop.
 
 ## Building from this checkout
 
-`Cargo.toml` currently contains a `[patch.crates-io]` entry that points at the
-sibling `../ct-uint` checkout. This is needed because the crate uses the public
-`Uint::from_limbs` and `Uint::limbs` constructors added to that checkout. Build
-from a directory layout that contains both `ct-uint/` and `ct-ed25519/`, or
-replace the patch with a published `ct-uint` release that exposes those
-constructors.
+`ct-ed25519` is a member of the `security` Cargo workspace, which also contains
+`ct-uint`, `ct-fp`, `ct-scalar`, and `ct-curve-point`. Build and test it from
+the workspace root:
+
+```sh
+cargo test -p ct-ed25519
+```
 
 ## Usage
 
 ```toml
 [dependencies]
-ct-ed25519 = "0.0.1"
+ct-ed25519 = "0.1.5"
 ```
 
 ```rust
@@ -356,6 +378,40 @@ product.to_affine().to_compressed(&mut encoded);
 The traits needed to operate on these types (`PointEncoding`,
 `ProjectiveCurvePoint`, `ScalarMul`, `ScalarField`, and the other traits from
 the `ct-*` crates) are re-exported from `ct_ed25519`.
+
+## API reference
+
+### Keys and signatures
+
+| Item | Description |
+|---|---|
+| `SigningKey::from_bytes(&[u8; 32])` | Build from a 32-byte RFC 8032 seed |
+| `SigningKey::verifying_key() -> &VerifyingKey` | Derived public key |
+| `SigningKey::to_bytes() -> [u8; 32]` | Seed encoding |
+| `Signer::sign(&self, message) -> Signature` | Deterministic signing |
+| `VerifyingKey::from_bytes(&[u8; 32]) -> Result<Self, signature::Error>` | Decode a compressed public key |
+| `VerifyingKey::to_bytes() -> [u8; 32]` | Compressed public-key encoding |
+| `Verifier::verify(&self, message, &Signature) -> Result<(), signature::Error>` | Verify a signature |
+| `Signature::BYTE_SIZE` | `64` |
+| `Signature::from_bytes(&[u8; 64])` | Build from the canonical encoding |
+| `Signature::to_bytes() -> [u8; 64]` | Encode $R \parallel S$ |
+| `Signature::try_from(&[u8])` | Fallible slice conversion |
+| `SignatureError` | Invalid key or signature encoding |
+
+### Curve and scalar types
+
+| Item | Description |
+|---|---|
+| `Ed25519Point` | Projective point; `identity`, `basepoint`, `from_affine` |
+| `Ed25519Affine` | Affine point and 32/64-byte `PointEncoding` |
+| `Ed25519Curve` | `CurveModel<4>` and `ScalarMul<4>` implementation |
+| `Ed25519Scalar` | Scalar in $\mathbb{F}_\ell$; `from_canonical_bytes`, `to_bytes` |
+| `PrimeField`, `ScalarField` | Field and scalar operations re-exported from the `ct-*` stack |
+| `CurvePoint`, `ProjectiveCurvePoint`, `AffineCurvePoint`, `PointEncoding`, `ScalarMul`, `CurveModel` | Curve traits re-exported for low-level use |
+
+`Ed25519Scalar` also exposes the `ScalarField` helpers `is_valid_scalar`,
+`from_bytes_mod_order`, and `from_bytes_wide`. The latter expects exactly 64
+bytes and reduces them little-endian, matching the Ed25519 convention.
 
 ## Feature flags
 
